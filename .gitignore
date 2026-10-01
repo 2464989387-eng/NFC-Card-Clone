@@ -1,0 +1,22 @@
+# 编译产物
+*.elf
+*.bin
+*.dump
+*.key
+build/
+obj/
+
+# Python
+__pycache__/
+*.pyc
+
+# 日志
+*.log
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 个人数据
+dumps/*.bin
+dumps/*.dump

@@ -2,6 +2,21 @@
 
 本项目记录使用 Proxmark3 进行 RFID/NFC 协议分析、卡片识别、密钥恢复与数据导出的实验过程。所有实验均在**自有卡片与授权设备**上完成，仅用于技术学习与研究。
 
+## 📁 项目结构
+
+```text
+proxmark3-rfid-lab/
+├── README.md
+├── docs/
+│   ├── setup.md
+│   ├── commands.md
+│   └── troubleshooting.md
+├── scripts/
+│   └── parse_dump.py
+├── dumps/          # 脱敏后的示例 dump
+└── LICENSE
+```
+
 ## ⚠️ 免责声明
 
 - 本项目仅用于**安全研究、协议学习与自有卡片备份**。
@@ -190,13 +205,50 @@ hf mf restore
 - 结果：未完成（涉及模拟特定卡片，存在合规风险）。
 - 替代方案：手机 OTG + Termux 运行客户端。
 
-## 📚 参考链接
+## 🧰 硬件与兼容性
 
+- **设备型号**：Proxmark3 Easy / RDV4 / Generic 的固件平台参数不同（`PM3GENERIC`、`PM3RDV4`），刷错会变砖。
+- **天线使用**：高频用大圆盘，低频用长条；`hw tune` 可检查天线电压是否正常。
+- **供电要求**：模拟或独立模式需要稳定供电，建议用带供电的 USB HUB 或充电宝。
+
+## ⚙️ 固件编译进阶
+
+- **独立模式编译**：通过 `Makefile.platform` 指定 `STANDALONE=HF_MFCSIM` 等模式。
+- **常用编译选项**：
+  - `PLATFORM_EXTRAS=BTADDON`（RDV4 蓝牙）
+  - `PLATFORM_SIZE=256`（256K 设备）
+- **版本回退**：`git checkout <tag>` 以匹配补丁。
+
+## 📋 常用命令速查表
+
+| 功能 | 命令 |
+|---|---|
+| 检查设备 | `hw version`、`hw status` |
+| 高频搜索 | `hf search`、`hf 14a info` |
+| 低频搜索 | `lf search`、`lf t55xx detect` |
+| 密钥检查 | `hf mf fchk --dump` |
+| 静态 nonce 攻击 | `hf mf sen` |
+| 全自动破解 | `hf mf autopwn` |
+| 导出数据 | `hf mf dump` |
+| 加载数据到模拟器 | `hf mf eload -f <file>` |
+| 模拟 M1 | `hf mf sim --1k -u <UID> -n 0 -i` |
+| 写入实体卡 | `hf mf restore` |
+| APDU 交互 | `hf 14a apdu -skt -d <hex>` |
+| 查看 trace | `trace list`、`hf 14a list` |
+
+## 📚 参考资料
+
+- ISO/IEC 14443、ISO/IEC 7816-4 标准文档
+- NXP MIFARE Classic 数据手册
+- 复旦微电子 FM1208 产品文档
 - [Proxmark3 官方源码](https://github.com/RfidResearchGroup/proxmark3)
+- [Proxmark3 官方 Wiki](https://github.com/RfidResearchGroup/proxmark3/wiki)
 - [Proxmark3 安装指南](https://github.com/RfidResearchGroup/proxmark3/blob/master/doc/md/Installation_Instructions/Windows-Installation-Instructions.md)
 - [usbipd-win](https://github.com/dorssel/usbipd-win)
-- [FM1208 脚本仓库](https://github.com/lyc8503/FM1208_scripts)
+- [FM1208_scripts](https://github.com/lyc8503/FM1208_scripts)
+- [nfcgate](https://github.com/nfcgate/nfcgate)
+- [MifareClassicTool](https://github.com/ikarus23/MifareClassicTool)
 
-## 📝 许可
+## 📄 许可
 
 本项目采用 MIT 许可证，仅供学习研究使用。请勿用于非法用途。
